@@ -1,25 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react'
+import Sidebar from './components/Sidebar'
+import Header from './components/Header'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import Discover from './pages/Discover'
+import { makeStyles } from '@material-ui/core'
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+  },
+}))
 
 function App() {
+  const classes = useStyles()
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={classes.root}>
+      <Router>
+        <CssBaseline />
+        <Header handleDrawerToggle={handleDrawerToggle} />
+        <Sidebar
+          mobileOpen={mobileOpen}
+          handleDrawerToggle={handleDrawerToggle}
+        />
+        <main className={classes.content}>
+          <Switch>
+            <Route
+              path="/discoveries/:type"
+              render={() => <Discover key={Math.random()} />}
+            />
+          </Switch>
+        </main>
+      </Router>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
