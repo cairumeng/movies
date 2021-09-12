@@ -1,22 +1,26 @@
-import { useParams } from 'react-router-dom'
-import useMovies from '../hooks/useMovies'
-import MoviesList from '../components/MoviesList'
 import { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import MoviesList from '../components/MoviesList'
+import useMovies from '../hooks/useMovies'
 
-const Discover = () => {
-  const { type } = useParams()
-
+const Genre = () => {
+  const { id, name } = useParams()
   const { movies, setCurrentPage, totalPages, currentPage, fetchMovies, page } =
-    useMovies({ url: `/movie/${type}` })
-
+    useMovies({
+      url: `discover/movie`,
+      query: {
+        with_genres: id,
+        sort_by: 'popularity.desc',
+      },
+    })
   useEffect(() => {
     fetchMovies(page)
-  }, [type])
+  }, [id])
 
   return (
     <div>
       <div className="uppercase text-xl mt-8 md:text-3xl md:mt-5 bold">
-        {type.replace('_', ' ')}
+        {name}
       </div>
       <div className="mb-8 text-lg text-gray-500">Movies</div>
       <MoviesList
@@ -28,4 +32,4 @@ const Discover = () => {
     </div>
   )
 }
-export default Discover
+export default Genre

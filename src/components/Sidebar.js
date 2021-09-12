@@ -30,6 +30,7 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
   const theme = useTheme()
   const classes = useStyles()
   const [genres, setGenres] = useState([])
+
   useEffect(() => {
     axios.get('/genre/movie/list').then((response) => {
       console.log(response.data.genres)
@@ -79,15 +80,16 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
           Genres
         </ListSubheader>
         {genres.map((genre) => (
-          <ListItem button key={genre.id}>
+          <ListItem
+            button
+            key={genre.id}
+            component={Link}
+            to={`/genres/${genre.id}/${genre.name}`}
+          >
             <ListItemIcon>
               <LensOutlined fontSize="small" color="primary" />
             </ListItemIcon>
-            <ListItemText
-              primary={genre.name}
-              component={Link}
-              to="/categories/popular"
-            />
+            <ListItemText primary={genre.name} />
           </ListItem>
         ))}
       </List>

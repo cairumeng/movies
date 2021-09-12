@@ -2,8 +2,14 @@ import { useState } from 'react'
 import Sidebar from './components/Sidebar'
 import Header from './components/Header'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from 'react-router-dom'
 import Discover from './pages/Discover'
+import Genre from './pages/Genre'
 import { makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
@@ -35,10 +41,9 @@ function App() {
         />
         <main className={classes.content}>
           <Switch>
-            <Route
-              path="/discoveries/:type"
-              render={() => <Discover key={Math.random()} />}
-            />
+            <Redirect exact from="/" to="/discoveries/popular" />
+            <Route path="/discoveries/:type" component={Discover} />
+            <Route path="/genres/:id/:name" component={Genre} />
           </Switch>
         </main>
       </Router>
