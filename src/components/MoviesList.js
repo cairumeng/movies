@@ -9,15 +9,17 @@ const MoviesList = ({ movies, setCurrentPage, currentPage, totalPages }) => {
           <MovieCard movie={movie} key={movie.id} />
         ))}
       </div>
-      <div className="flex justify-center mt-5">
-        <Pagination
-          count={totalPages}
-          shape="rounded"
-          page={currentPage}
-          color="primary"
-          onChange={(event, page) => setCurrentPage(page)}
-        />
-      </div>
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-5">
+          <Pagination
+            count={totalPages}
+            shape="rounded"
+            page={currentPage}
+            color="primary"
+            onChange={(event, page) => setCurrentPage(page)}
+          />
+        </div>
+      )}
     </div>
   )
 }

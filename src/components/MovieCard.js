@@ -7,6 +7,7 @@ import Rating from '@material-ui/lab/Rating'
 import Popover from '@material-ui/core/Popover'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
+import DefaultMoviePoster from '../assets/nothing.svg'
 
 const useStyles = makeStyles((theme) => ({
   popover: {
@@ -37,13 +38,17 @@ const MovieCard = ({ movie }) => {
   return (
     <Link
       className="transition duration-300 ease-in-out transform hover:-translate-y hover:scale-110 hover:shadow-md"
-      to={`/movies/${movie.id}`}
+      to={`/movies/${movie.id}?page=1`}
     >
       <Card>
         <CardActionArea>
           <CardMedia
             className="h-52 md:h-64"
-            image={`https://image.tmdb.org/t/p/w342${movie.poster_path}`}
+            image={
+              movie.poster_path
+                ? `https://image.tmdb.org/t/p/w342${movie.poster_path}`
+                : DefaultMoviePoster
+            }
             title={movie.title}
           />
           <CardContent className="flex flex-col items-center">

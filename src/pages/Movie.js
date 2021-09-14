@@ -10,9 +10,11 @@ import ModalVideo from 'react-modal-video'
 import { useEffect, useState } from 'react'
 import { Link, useHistory, useParams } from 'react-router-dom'
 import axios from 'axios'
-import castDefaultImg from './assets/person.svg'
+import CastDefaultImg from '../assets/person.svg'
+import DefaultMoviePoster from '../assets/nothing.svg'
 import useMovies from '../hooks/useMovies'
 import MoviesList from '../components/MoviesList'
+import Loader from '../components/Loader'
 
 const Movie = () => {
   const { id } = useParams()
@@ -24,7 +26,6 @@ const Movie = () => {
     setCurrentPage: setRecommandedCurrentPage,
     totalPages: recommandedTotalPages,
     fetchMovies: fetchRecommandedMovies,
-    page,
   } = useMovies({
     url: `/movie/${id}/recommendations`,
   })
@@ -43,18 +44,25 @@ const Movie = () => {
       .then((response) => setCast(response.data.cast))
 
     fetchRecommandedMovies(1)
-  }, [id])
+  }, [id, recommandedCurrentPage])
 
-  if (movie === null || cast === null) return 'loading'
+  if (movie === null) return <Loader />
 
   return (
     <>
-      <div className="mt-8 mb-2" onClick={() => history.push('/')}>
-        <ArrowBack color="primary" />
-      </div>
+      <ArrowBack
+        color="primary"
+        className="cursor-pointer mt-2"
+        onClick={() => history.goBack()}
+      />
+
       <div className="grid sm:grid-cols-1 lg:grid-cols-3 lg:p-28 gap-10">
         <img
-          src={`https://image.tmdb.org/t/p/w780${movie.poster_path}`}
+          src={
+            movie.poster_path
+              ? `https://image.tmdb.org/t/p/w780${movie.poster_path}`
+              : DefaultMoviePoster
+          }
           className="w-full col-span-2 lg:col-span-1"
         />
         <div className="col-span-2">
@@ -86,37 +94,41 @@ const Movie = () => {
           </div>
           <div className="mt-8">
             <div className="font-bold mb-2">THE CASTING</div>
-            <AvatarGroup max={10}>
-              {cast.map((person) => (
-                <Link to={`/persons/${person.id}`} key={person.id}>
+            <AvatarGroup max={10} style={{ flexWrap: 'wrap' }}>
+              {cast?.map((person) => (
+                <Link to={`/persons/${person.id}?page=1`} key={person.id}>
                   <Avatar
                     alt={person.name}
                     src={
                       person.profile_path
                         ? `https://image.tmdb.org/t/p/w185${person.profile_path}`
-                        : `${castDefaultImg}`
+                        : `${CastDefaultImg}`
                     }
                   />
                 </Link>
               ))}
             </AvatarGroup>
           </div>
-          <div className="mt-8 flex">
-            <Button
-              variant="outlined"
-              color="primary"
-              style={{ marginRight: '10px', marginBottom: '10px' }}
-              href={movie.homepage}
-            >
-              <span className="mr-1">Website</span>
-              <LinkIcon />
-            </Button>
+          <div className="mt-8 flex flex-wrap">
+            {movie.homepage && (
+              <Button
+                variant="outlined"
+                color="primary"
+                target="_blank"
+                style={{ marginRight: '10px', marginBottom: '10px' }}
+                href={movie.homepage}
+              >
+                <span className="mr-1">Website</span>
+                <LinkIcon />
+              </Button>
+            )}
             {movie.imdb_id && (
               <Button
                 variant="outlined"
                 color="primary"
                 style={{ marginRight: '10px', marginBottom: '10px' }}
-                href={movie.homepage}
+                target="_blank"
+                href={`https://www.imdb.com/title/${movie.imdb_id}`}
               >
                 <span className="mr-1">IMDB</span> <MovieIcon />
               </Button>
@@ -142,16 +154,23 @@ const Movie = () => {
           </div>
         </div>
       </div>
-      <div>
-        <div className="text-xl mt-8 md:text-3xl md:mt-5 bold">RECOMMANDED</div>
-        <div className="mb-8 text-lg text-gray-500">Movies</div>
-        <MoviesList
-          movies={recommandedMovies}
-          setCurrentPage={setRecommandedCurrentPage}
-          currentPage={recommandedCurrentPage}
-          totalPages={recommandedTotalPages}
-        />
-      </div>
+      {recommandedMovies.length > 0 && (
+        <div>
+          <div
+            id="recommanded"
+            className="text-xl mt-8 md:text-3xl md:mt-5 bold"
+          >
+            RECOMMANDED
+          </div>
+          <div className="mb-8 text-lg text-gray-500">Movies</div>
+          <MoviesList
+            movies={recommandedMovies}
+            setCurrentPage={setRecommandedCurrentPage}
+            currentPage={recommandedCurrentPage}
+            totalPages={recommandedTotalPages}
+          />
+        </div>
+      )}
     </>
   )
 }

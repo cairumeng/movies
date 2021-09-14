@@ -66,7 +66,7 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
             button
             key={item.name}
             component={Link}
-            to={`/discoveries/${item.slug}`}
+            to={`/discoveries/${item.slug}?page=1`}
           >
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.name} />
@@ -83,7 +83,7 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
             button
             key={genre.id}
             component={Link}
-            to={`/genres/${genre.id}/${genre.name}`}
+            to={`/genres/${genre.id}/${genre.name}?page=1`}
           >
             <ListItemIcon>
               <LensOutlined color="primary" style={{ fontSize: 16 }} />

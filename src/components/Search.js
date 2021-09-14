@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import InputBase from '@material-ui/core/InputBase'
 import { makeStyles } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
+import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -45,6 +46,14 @@ const useStyles = makeStyles((theme) => ({
 
 const Search = () => {
   const classes = useStyles()
+  const history = useHistory()
+  const [query, setQuery] = useState('')
+
+  const searchHandler = (e) => {
+    if (e.key === 'Enter') {
+      history.push(`/search/${query}?page=1`)
+    }
+  }
   return (
     <div className={classes.search}>
       <div className={classes.searchIcon}>
@@ -52,11 +61,13 @@ const Search = () => {
       </div>
       <InputBase
         placeholder="Search…"
+        onKeyDown={searchHandler}
         classes={{
           root: classes.inputRoot,
           input: classes.inputInput,
         }}
         inputProps={{ 'aria-label': 'search' }}
+        onChange={(e) => setQuery(e.target.value)}
       />
     </div>
   )

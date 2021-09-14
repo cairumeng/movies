@@ -11,21 +11,10 @@ import {
 import Discover from './pages/Discover'
 import Genre from './pages/Genre'
 import Movie from './pages/Movie'
-import { makeStyles } from '@material-ui/core'
 import Person from './pages/Person'
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-  },
-}))
+import SearchResult from './pages/SearchResult'
 
 function App() {
-  const classes = useStyles()
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const handleDrawerToggle = () => {
@@ -33,7 +22,7 @@ function App() {
   }
 
   return (
-    <div className={classes.root}>
+    <div className="flex">
       <Router>
         <CssBaseline />
         <Header handleDrawerToggle={handleDrawerToggle} />
@@ -41,13 +30,14 @@ function App() {
           mobileOpen={mobileOpen}
           handleDrawerToggle={handleDrawerToggle}
         />
-        <main className={classes.content}>
+        <main className="flex-grow p-3 mt-16">
           <Switch>
             <Redirect exact from="/" to="/discoveries/popular" />
             <Route path="/discoveries/:type" component={Discover} />
             <Route path="/genres/:id/:name" component={Genre} />
             <Route path="/movies/:id" component={Movie} />
             <Route path="/persons/:id" component={Person} />
+            <Route path="/search/:query" component={SearchResult} />
           </Switch>
         </main>
       </Router>

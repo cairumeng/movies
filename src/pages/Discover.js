@@ -2,22 +2,33 @@ import { useParams } from 'react-router-dom'
 import useMovies from '../hooks/useMovies'
 import MoviesList from '../components/MoviesList'
 import { useEffect } from 'react'
+import Loader from '../components/Loader'
 
 const Discover = () => {
   const { type } = useParams()
 
-  const { movies, setCurrentPage, totalPages, currentPage, fetchMovies, page } =
-    useMovies({ url: `/movie/${type}` })
+  const {
+    movies,
+    setCurrentPage,
+    totalPages,
+    currentPage,
+    fetchMovies,
+    isLoading,
+  } = useMovies({ url: `/movie/${type}` })
 
   useEffect(() => {
-    fetchMovies(page)
-  }, [type])
+    window.scroll({ top: 0, behavior: 'smooth' })
+    fetchMovies(currentPage)
+  }, [type, currentPage])
+
+  if (isLoading) return <Loader />
 
   return (
     <div>
-      <div className="uppercase text-xl mt-8 md:text-3xl md:mt-5 bold">
+      <div className="uppercase text-xl md:text-3xl bold">
         {type.replace('_', ' ')}
       </div>
+
       <div className="mb-8 text-lg text-gray-500">Movies</div>
       <MoviesList
         movies={movies}

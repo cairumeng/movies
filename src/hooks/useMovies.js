@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
 const queryToString = (query) => {
@@ -15,27 +15,35 @@ const useMovies = ({ url, query = {} }) => {
   const location = useLocation()
   const [movies, setMovies] = useState([])
   const search = new URLSearchParams(location.search)
-  const page = Number(search.get('page')) || 1
+  let page = Number(search.get('page')) || 1
   const [currentPage, setCurrentPage] = useState(page)
   const [totalPages, setTotalPages] = useState(1)
+  const [isLoading, setLoading] = useState(false)
 
-  const fetchMovies = (page) => {
-    window.scroll({ top: 0, behavior: 'smooth' })
-    window.history.pushState({}, '', '?page=' + page)
-
-    const queries = queryToString({ ...query, page })
-    axios.get(`${url}?${queries}`).then(({ data }) => {
-      setMovies(data.results)
-      setCurrentPage(page)
-      setTotalPages(data.total_pages)
-    })
+  const fetchMovies = () => {
+    setLoading(true)
+    if (page !== currentPage) {
+      page = currentPage
+      window.history.pushState({}, '', '?page=' + currentPage)
+    }
+    let queries = queryToString({ ...query, page: currentPage })
+    axios
+      .get(`${url}?${queries}`)
+      .then(({ data }) => {
+        setMovies(data.results)
+        setTotalPages(data.total_pages)
+      })
+      .finally(() => setLoading(false))
   }
 
-  useEffect(() => {
-    fetchMovies(currentPage)
-  }, [currentPage])
-
-  return { movies, currentPage, setCurrentPage, totalPages, fetchMovies, page }
+  return {
+    movies,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+    fetchMovies,
+    isLoading,
+  }
 }
 
 export default useMovies

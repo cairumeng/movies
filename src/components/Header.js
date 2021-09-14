@@ -25,7 +25,7 @@ const Header = ({ handleDrawerToggle }) => {
   const classes = useStyles()
   return (
     <AppBar
-      position="fixed"
+      position="absolute"
       className={classes.appBar}
       color="transparent"
       elevation={0}
