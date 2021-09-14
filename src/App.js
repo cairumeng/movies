@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom'
 import Discover from './pages/Discover'
 import Genre from './pages/Genre'
+import Movie from './pages/Movie'
 import { makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
@@ -44,6 +45,7 @@ function App() {
             <Redirect exact from="/" to="/discoveries/popular" />
             <Route path="/discoveries/:type" component={Discover} />
             <Route path="/genres/:id/:name" component={Genre} />
+            <Route path="/movies/:id" component={Movie} />
           </Switch>
         </main>
       </Router>

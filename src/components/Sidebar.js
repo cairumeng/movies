@@ -33,7 +33,6 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
 
   useEffect(() => {
     axios.get('/genre/movie/list').then((response) => {
-      console.log(response.data.genres)
       setGenres(response.data.genres)
     })
   }, [])
@@ -87,7 +86,7 @@ const Sidebar = ({ handleDrawerToggle, mobileOpen }) => {
             to={`/genres/${genre.id}/${genre.name}`}
           >
             <ListItemIcon>
-              <LensOutlined fontSize="small" color="primary" />
+              <LensOutlined color="primary" style={{ fontSize: 16 }} />
             </ListItemIcon>
             <ListItemText primary={genre.name} />
           </ListItem>
