@@ -8,7 +8,7 @@ import { AvatarGroup } from '@material-ui/lab'
 import Rating from '@material-ui/lab/Rating'
 import ModalVideo from 'react-modal-video'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useHistory, useParams } from 'react-router-dom'
 import axios from 'axios'
 import castDefaultImg from './assets/person.svg'
 import useMovies from '../hooks/useMovies'
@@ -17,17 +17,23 @@ import MoviesList from '../components/MoviesList'
 const Movie = () => {
   const { id } = useParams()
   const [movie, setMovie] = useState(null)
+  const history = useHistory()
   const {
     movies: recommandedMovies,
     currentPage: recommandedCurrentPage,
     setCurrentPage: setRecommandedCurrentPage,
     totalPages: recommandedTotalPages,
+    fetchMovies: fetchRecommandedMovies,
+    page,
   } = useMovies({
     url: `/movie/${id}/recommendations`,
   })
+
   const [cast, setCast] = useState(null)
   const [isOpen, setOpen] = useState(false)
+
   useEffect(() => {
+    window.scroll({ top: 0, behavior: 'smooth' })
     axios
       .get(`/movie/${id}?append_to_response=videos`)
       .then((response) => setMovie(response.data))
@@ -35,12 +41,15 @@ const Movie = () => {
     axios
       .get(`/movie/${id}/credits`)
       .then((response) => setCast(response.data.cast))
-  }, [])
+
+    fetchRecommandedMovies(1)
+  }, [id])
+
   if (movie === null || cast === null) return 'loading'
 
   return (
     <>
-      <div className="mt-8 mb-2">
+      <div className="mt-8 mb-2" onClick={() => history.push('/')}>
         <ArrowBack color="primary" />
       </div>
       <div className="grid sm:grid-cols-1 lg:grid-cols-3 lg:p-28 gap-10">
@@ -78,15 +87,17 @@ const Movie = () => {
           <div className="mt-8">
             <div className="font-bold mb-2">THE CASTING</div>
             <AvatarGroup max={10}>
-              {cast.map((acteur) => (
-                <Avatar
-                  alt={acteur.name}
-                  src={
-                    acteur.profile_path
-                      ? `https://image.tmdb.org/t/p/w185${acteur.profile_path}`
-                      : `${castDefaultImg}`
-                  }
-                />
+              {cast.map((person) => (
+                <Link to={`/persons/${person.id}`} key={person.id}>
+                  <Avatar
+                    alt={person.name}
+                    src={
+                      person.profile_path
+                        ? `https://image.tmdb.org/t/p/w185${person.profile_path}`
+                        : `${castDefaultImg}`
+                    }
+                  />
+                </Link>
               ))}
             </AvatarGroup>
           </div>
@@ -97,7 +108,7 @@ const Movie = () => {
               style={{ marginRight: '10px', marginBottom: '10px' }}
               href={movie.homepage}
             >
-              <sapn className="mr-1">Website</sapn>
+              <span className="mr-1">Website</span>
               <LinkIcon />
             </Button>
             {movie.imdb_id && (

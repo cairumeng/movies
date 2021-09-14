@@ -12,6 +12,7 @@ import Discover from './pages/Discover'
 import Genre from './pages/Genre'
 import Movie from './pages/Movie'
 import { makeStyles } from '@material-ui/core'
+import Person from './pages/Person'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,6 +47,7 @@ function App() {
             <Route path="/discoveries/:type" component={Discover} />
             <Route path="/genres/:id/:name" component={Genre} />
             <Route path="/movies/:id" component={Movie} />
+            <Route path="/persons/:id" component={Person} />
           </Switch>
         </main>
       </Router>
